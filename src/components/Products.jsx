@@ -1,20 +1,23 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Laptop, Smartphone, Watch } from 'lucide-react'
-import { fetchProducts } from '@/utils/api'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Laptop, Smartphone, Watch } from "lucide-react";
+import { fetchProducts } from "@/utils/api";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState([]) // Stores products fetched from the API
-  const [loading, setLoading] = useState(true) // Tracks loading state
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [sortBy, setSortBy] = useState('name')
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("name");
+  const router = useRouter();
+
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -30,29 +33,34 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = products
-    .filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCategory === 'All' || product.category === selectedCategory)
+    .filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedCategory === "All" || product.category === selectedCategory)
     )
     .sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name)
-      if (sortBy === 'price_asc') return a.price - b.price
-      if (sortBy === 'price_desc') return b.price - a.price
-      return 0
-    })
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      if (sortBy === "price_asc") return a.price - b.price;
+      if (sortBy === "price_desc") return b.price - a.price;
+      return 0;
+    });
 
   const getCategoryIcon = (category) => {
     switch (category) {
-      case 'Laptops':
-        return <Laptop className="h-6 w-6" />
-      case 'Smartphones':
-        return <Smartphone className="h-6 w-6" />
-      case 'Smartwatches':
-        return <Watch className="h-6 w-6" />
+      case "Laptops":
+        return <Laptop className="h-6 w-6" />;
+      case "Smartphones":
+        return <Smartphone className="h-6 w-6" />;
+      case "Smartwatches":
+        return <Watch className="h-6 w-6" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
+
+  const handleProductClick = (productId) => {
+    router.push(`/dashboard/${productId}`);
+  };
 
   if (loading) {
     return (
@@ -81,7 +89,7 @@ export default function ProductsPage() {
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -117,8 +125,12 @@ export default function ProductsPage() {
         </Select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.map(product => (
-          <Card key={product._id}>
+        {filteredProducts.map((product) => (
+          <Card
+            key={product._id}
+            onClick={() => handleProductClick(product._id)}
+            className="cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105"
+          >
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 {product.name}
@@ -127,7 +139,7 @@ export default function ProductsPage() {
             </CardHeader>
             <CardContent>
               <img
-                src={product.image || '/placeholder.svg'}
+                src={product.image || "/placeholder.svg"}
                 alt={product.name}
                 className="w-full h-48 object-cover mb-4"
               />
@@ -144,5 +156,6 @@ export default function ProductsPage() {
         <p className="text-center text-gray-500 mt-8">No products found.</p>
       )}
     </div>
-  )
+  );
 }
+

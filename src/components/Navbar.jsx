@@ -1,8 +1,8 @@
 // components/Navbar.js
 import { buttonVariants } from "@/components/ui/button"
 import Link from 'next/link'
-import { ShoppingCart } from 'lucide-react'
 import MobileMenu from '@/components/MobileScreen'
+import { ShoppingCart } from 'lucide-react'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 
@@ -16,7 +16,6 @@ const Navbar = async () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-              <ShoppingCart className="h-6 w-6 mr-2" />
               TechGadgets
             </Link>
           </div>
@@ -50,7 +49,7 @@ const Navbar = async () => {
 
               <div className='h-8 w-px bg-zinc-200 hidden sm:block' />
               <Link
-                href="/"
+                href="/admin"
                 className={buttonVariants({ size: "default", variant: "outline" })}>
                 Admin
               </Link>
